@@ -2,8 +2,9 @@ import { Button, Grid, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
+import { IsValidCredentials } from '../../../../configs/types/IsValidCredentials';
 import {
 	validateConfirmaSenha,
 	validateEmail,
@@ -39,6 +40,84 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 	const [senha, setSenha] = useState('');
 	const [confirmaSenha, setConfirmaSenha] = useState('');
 
+	const [errorUsuario, setErrorUsuario] = useState<IsValidCredentials>({
+		helperText: '',
+		isValid: true,
+	});
+
+	const [errorEmail, setErrorEmail] = useState<IsValidCredentials>({
+		helperText: '',
+		isValid: true,
+	});
+	const [errorSenha, setErrorSenha] = useState<IsValidCredentials>({
+		helperText: '',
+		isValid: true,
+	});
+
+	const [errorConfirmaSenha, setErrorConfirmaSenha] =
+		useState<IsValidCredentials>({
+			helperText: '',
+			isValid: true,
+		});
+
+	useEffect(() => {
+		if (usuario && !validateUsuario(usuario)) {
+			setErrorUsuario({
+				helperText: 'Insira no minimo 5 caracteres',
+				isValid: false,
+			});
+		} else {
+			setErrorUsuario({
+				helperText: '',
+				isValid: true,
+			});
+		}
+	}, [usuario]);
+
+	useEffect(() => {
+		if (email && !validateEmail(email)) {
+			setErrorEmail({
+				helperText: 'Insira um email válido',
+				isValid: false,
+			});
+		} else {
+			setErrorEmail({
+				helperText: '',
+				isValid: true,
+			});
+		}
+	}, [email]);
+
+	useEffect(() => {
+		if (senha && !validateSenha(senha)) {
+			setErrorSenha({
+				helperText: 'Insira no minimo 5 caracteres',
+				isValid: false,
+			});
+		} else {
+			setErrorSenha({
+				helperText: '',
+				isValid: true,
+			});
+		}
+
+		if (confirmaSenha && !validateConfirmaSenha(senha, confirmaSenha)) {
+			setErrorConfirmaSenha({
+				helperText: 'As senhas não são idênticas',
+				isValid: false,
+			});
+		} else {
+			setErrorConfirmaSenha({
+				helperText: '',
+				isValid: true,
+			});
+		}
+	}, [senha, confirmaSenha]);
+
+	useEffect(() => {
+		limpaModal();
+	}, [fecharModal]);
+
 	function validateInputs() {
 		if (
 			validateUsuario(usuario) &&
@@ -46,7 +125,6 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 			validateSenha(senha) &&
 			validateConfirmaSenha(senha, confirmaSenha)
 		) {
-			console.log('Cadastro validado');
 			return true;
 		}
 		return false;
@@ -69,11 +147,15 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 		};
 
 		cadastraUsuario((prev) => [...prev, user]);
+		limpaModal();
+		fecharModal();
+	}
+
+	function limpaModal() {
 		setUsuario('');
 		setEmail('');
 		setSenha('');
 		setConfirmaSenha('');
-		fecharModal();
 	}
 
 	return (
@@ -107,17 +189,20 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 							onSubmit={(ev) => handleSubmit(ev)}
 						>
 							<TextField
-								value={usuario}
 								variant="standard"
 								label="Usuário"
+								helperText={errorUsuario.helperText}
+								error={!errorUsuario.isValid}
 								onChange={(ev) =>
 									setUsuario(ev.currentTarget.value)
 								}
 							/>
 							<TextField
-								value={email}
 								variant="standard"
 								label="Email"
+								type="email"
+								helperText={errorEmail.helperText}
+								error={!errorEmail.isValid}
 								onChange={(ev) =>
 									setEmail(ev.currentTarget.value)
 								}
@@ -125,15 +210,19 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 							<TextField
 								variant="standard"
 								label="Senha"
-								value={senha}
+								type="password"
+								helperText={errorSenha.helperText}
+								error={!errorSenha.isValid}
 								onChange={(ev) =>
 									setSenha(ev.currentTarget.value)
 								}
 							/>
 							<TextField
 								variant="standard"
+								type="password"
 								label="Confirme sua Senha"
-								value={confirmaSenha}
+								helperText={errorConfirmaSenha.helperText}
+								error={!errorConfirmaSenha.isValid}
 								onChange={(ev) =>
 									setConfirmaSenha(ev.currentTarget.value)
 								}

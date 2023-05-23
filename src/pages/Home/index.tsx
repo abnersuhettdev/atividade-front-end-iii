@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Logo from '../../assets/croppedLogo.png';
 import { LoginForm } from './components/LoginForm';
@@ -9,7 +9,10 @@ const Home: React.FC = () => {
 	const [open, setOpen] = useState(false);
 	const [users, setUsers] = useState<IUser[]>([]);
 
-	console.log(users);
+	useEffect(() => {
+		console.log(users);
+	}, [users]);
+
 	return (
 		<Grid
 			container
