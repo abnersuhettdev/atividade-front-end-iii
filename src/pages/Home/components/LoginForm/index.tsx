@@ -1,16 +1,45 @@
 import { Box, Button, TextField } from '@mui/material';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import {
+	hideLoading,
+	showLoading,
+} from '../../../../store/modules/Loading/loadingSlice';
+import { showSnackbar } from '../../../../store/modules/Snackbar/snackbarSlice';
+import { buscarUsuarios } from '../../../../store/modules/User/usersSlice';
 
 export const LoginForm: React.FC = () => {
 	const [email, setEmail] = useState('');
 	const [senha, setSenha] = useState('');
 
-	function VerificarUsuarioExiste() {}
+	const select = useAppSelector(buscarUsuarios);
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 
 	function handleLogin(ev: React.FormEvent<HTMLFormElement>) {
 		ev.preventDefault();
 
-		VerificarUsuarioExiste();
+		const user = select.find((user) => {
+			return user.email === email && user.senha === senha;
+		});
+
+		if (!user) {
+			dispatch(
+				showSnackbar({
+					mensagem: 'Alguma coisa está errada',
+					tipo: 'error',
+				}),
+			);
+			return;
+		}
+
+		dispatch(showLoading());
+		setTimeout(() => {
+			dispatch(hideLoading());
+			navigate('/dashboard');
+		}, 3000);
 	}
 
 	return (

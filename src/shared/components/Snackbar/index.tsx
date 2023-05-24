@@ -1,27 +1,23 @@
 /* eslint-disable react/prop-types */
 import { Alert, Snackbar } from '@mui/material';
 
-interface ErroProps {
-	mostrarErro: boolean;
-	fechaErro: () => void;
-	mensagem: string;
-	tipo: 'warning' | 'error' | 'success';
-}
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { hideSnackbar } from '../../../store/modules/Snackbar/snackbarSlice';
 
-export const MySnackbar: React.FC<ErroProps> = ({
-	fechaErro,
-	mensagem,
-	mostrarErro,
-	tipo,
-}) => {
+export const MySnackbar: React.FC = () => {
+	const select = useAppSelector((state) => state.snackbar);
+	const dispatch = useAppDispatch();
+
 	return (
 		<div>
 			<Snackbar
-				open={mostrarErro}
+				open={select.show}
 				autoHideDuration={3000}
-				onClose={fechaErro}
+				onClose={() =>
+					dispatch(hideSnackbar({ mensagem: '', tipo: 'warning' }))
+				}
 			>
-				<Alert severity={tipo}>{mensagem}</Alert>
+				<Alert severity={select.tipo}>{select.mensagem}</Alert>
 			</Snackbar>
 		</div>
 	);

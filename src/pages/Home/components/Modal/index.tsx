@@ -8,9 +8,16 @@ import { IsValidCredentials } from '../../../../configs/types/IsValidCredentials
 import {
 	validateConfirmaSenha,
 	validateEmail,
+	validateEmailExists,
 	validateSenha,
 	validateUsuario,
 } from '../../../../configs/Validators';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { showSnackbar } from '../../../../store/modules/Snackbar/snackbarSlice';
+import {
+	adicionarUsuario,
+	buscarUsuarios,
+} from '../../../../store/modules/User/usersSlice';
 
 const style = {
 	position: 'absolute' as const,
@@ -27,18 +34,19 @@ const style = {
 interface ModalProps {
 	aberto: boolean;
 	fecharModal: () => void;
-	cadastraUsuario: React.Dispatch<React.SetStateAction<IUser[]>>;
 }
 
 export const ModalCadastro: React.FC<ModalProps> = ({
 	aberto,
 	fecharModal,
-	cadastraUsuario,
 }) => {
 	const [usuario, setUsuario] = useState('');
 	const [email, setEmail] = useState('');
 	const [senha, setSenha] = useState('');
 	const [confirmaSenha, setConfirmaSenha] = useState('');
+
+	const dispatch = useAppDispatch();
+	const select = useAppSelector(buscarUsuarios);
 
 	const [errorUsuario, setErrorUsuario] = useState<IsValidCredentials>({
 		helperText: '',
@@ -86,7 +94,16 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 				isValid: true,
 			});
 		}
-	}, [email]);
+
+		const emailExists = validateEmailExists(select, email);
+
+		if (!emailExists) {
+			setErrorEmail({
+				helperText: 'Email já existente',
+				isValid: false,
+			});
+		}
+	}, [email, select]);
 
 	useEffect(() => {
 		if (senha && !validateSenha(senha)) {
@@ -146,7 +163,13 @@ export const ModalCadastro: React.FC<ModalProps> = ({
 			senha,
 		};
 
-		cadastraUsuario((prev) => [...prev, user]);
+		dispatch(
+			showSnackbar({
+				mensagem: 'Usuário criado com sucesso!',
+				tipo: 'success',
+			}),
+		);
+		dispatch(adicionarUsuario(user));
 		limpaModal();
 		fecharModal();
 	}

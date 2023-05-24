@@ -1,17 +1,14 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import Logo from '../../assets/croppedLogo.png';
+import { Loading } from '../../shared/components/Loading';
+import { MySnackbar } from '../../shared/components/Snackbar';
 import { LoginForm } from './components/LoginForm';
 import { ModalCadastro } from './components/Modal';
 
 const Home: React.FC = () => {
 	const [open, setOpen] = useState(false);
-	const [users, setUsers] = useState<IUser[]>([]);
-
-	useEffect(() => {
-		console.log(users);
-	}, [users]);
 
 	return (
 		<Grid
@@ -71,11 +68,9 @@ const Home: React.FC = () => {
 				</Grid>
 			</Grid>
 
-			<ModalCadastro
-				aberto={open}
-				fecharModal={() => setOpen(false)}
-				cadastraUsuario={setUsers}
-			/>
+			<ModalCadastro aberto={open} fecharModal={() => setOpen(false)} />
+			<Loading />
+			<MySnackbar />
 		</Grid>
 	);
 };
