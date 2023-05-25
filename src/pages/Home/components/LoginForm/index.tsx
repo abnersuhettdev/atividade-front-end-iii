@@ -25,6 +25,16 @@ export const LoginForm: React.FC = () => {
 			return user.email === email && user.senha === senha;
 		});
 
+		if (!email || !senha) {
+			dispatch(
+				showSnackbar({
+					mensagem: 'Insira um email e senha para continuar',
+					tipo: 'warning',
+				}),
+			);
+			return;
+		}
+
 		if (!user) {
 			dispatch(
 				showSnackbar({
@@ -35,6 +45,12 @@ export const LoginForm: React.FC = () => {
 			return;
 		}
 
+		const userLogged = {
+			usuario: user.usuario,
+			email: user.email,
+		};
+
+		localStorage.setItem('userLogged', JSON.stringify({ userLogged }));
 		dispatch(showLoading());
 		setTimeout(() => {
 			dispatch(hideLoading());
