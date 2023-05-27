@@ -3,6 +3,7 @@ import {
 	AppBar,
 	Box,
 	Button,
+	Divider,
 	IconButton,
 	Toolbar,
 	Typography,
@@ -30,11 +31,12 @@ export const MyAppbar = () => {
 	}
 
 	return (
-		<Box sx={{ flexGrow: 1 }}>
+		<Box sx={{ flexGrow: 1, height: '10vh' }}>
 			<AppBar
 				position="static"
 				sx={{
-					backgroundColor: 'transparent',
+					background: 'transparent',
+					boxShadow: 0,
 				}}
 			>
 				<Toolbar>
@@ -68,6 +70,7 @@ export const MyAppbar = () => {
 					</IconButton>
 				</Toolbar>
 			</AppBar>
+			<Divider sx={{ height: '2px', background: '#fff' }} />
 		</Box>
 	);
 };

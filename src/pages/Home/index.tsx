@@ -1,5 +1,6 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Logo from '../../assets/croppedLogo.png';
 import { Loading } from '../../shared/components/Loading';
@@ -9,6 +10,13 @@ import { ModalCadastro } from './components/Modal';
 
 const Home: React.FC = () => {
 	const [open, setOpen] = useState(false);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (localStorage.getItem('userLogged')) {
+			navigate('/dashboard');
+		}
+	}, [navigate]);
 
 	return (
 		<Grid

@@ -6,11 +6,6 @@ interface SnackbarProps {
 	tipo: 'warning' | 'error' | 'success';
 }
 
-interface SnackAction {
-	mensagem: string;
-	tipo: 'warning' | 'error' | 'success';
-}
-
 const initialState: SnackbarProps = {
 	show: false,
 	mensagem: '',
@@ -21,14 +16,14 @@ const snackbarSlice = createSlice({
 	name: 'loading',
 	initialState,
 	reducers: {
-		showSnackbar: (state, action: PayloadAction<SnackAction>) => {
+		showSnackbar: (state, action: PayloadAction<SnackbarProps>) => {
 			return {
 				show: true,
 				mensagem: action.payload.mensagem,
 				tipo: action.payload.tipo,
 			};
 		},
-		hideSnackbar: (state, action: PayloadAction<SnackAction>) => {
+		hideSnackbar: (state, action: PayloadAction<SnackbarProps>) => {
 			return {
 				show: false,
 				mensagem: action.payload.mensagem,
