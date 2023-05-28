@@ -5,10 +5,15 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 
+import { INotes } from '../../../configs/types/Notes';
 import { useAppDispatch } from '../../../store/hooks';
 import { showModalNotes } from '../../../store/modules/ModalNotes/modalNotesSlice';
 
-export default function MyCard() {
+interface NotesProps {
+	notes: INotes;
+}
+
+export const MyCard: React.FC<NotesProps> = ({ notes }) => {
 	const dispatch = useAppDispatch();
 
 	return (
@@ -60,4 +65,4 @@ export default function MyCard() {
 			</CardActions>
 		</Card>
 	);
-}
+};

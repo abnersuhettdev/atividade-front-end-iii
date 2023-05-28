@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
 import Fab from '@mui/material/Fab';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { MyAppbar } from '../../shared/components/Appbar';
@@ -14,12 +14,18 @@ import { showModalNotes } from '../../store/modules/ModalNotes/modalNotesSlice';
 export const Dashboard = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+	const [username, setUsername] = useState('');
 
 	useEffect(() => {
-		if (!localStorage.getItem('userLogged')) {
+		const usuarioLogado = JSON.parse(
+			localStorage.getItem('userLogged') || '',
+		);
+
+		if (!usuarioLogado) {
 			navigate('/');
 		}
-	}, [navigate]);
+		setUsername(usuarioLogado.userLogged.usuario);
+	}, [navigate, username]);
 
 	return (
 		<>
@@ -29,7 +35,7 @@ export const Dashboard = () => {
 					position: 'relative',
 				}}
 			>
-				<MyAppbar />
+				<MyAppbar usuario={username} />
 
 				<Grid
 					container

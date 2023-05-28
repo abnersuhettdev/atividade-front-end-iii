@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Logout } from '@mui/icons-material';
 import {
 	AppBar,
@@ -16,7 +17,11 @@ import {
 	showLoading,
 } from '../../../store/modules/Loading/loadingSlice';
 
-export const MyAppbar = () => {
+interface AppbarProps {
+	usuario: string;
+}
+
+export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
@@ -41,11 +46,12 @@ export const MyAppbar = () => {
 			>
 				<Toolbar>
 					<Typography
-						variant="h6"
+						variant="h4"
 						component="div"
+						fontWeight={'bold'}
 						sx={{ flexGrow: 1 }}
 					>
-						Olá $usuário
+						Olá {usuario}!
 					</Typography>
 					<Button
 						color="inherit"
