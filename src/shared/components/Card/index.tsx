@@ -13,7 +13,7 @@ interface NotesProps {
 	notes: INotes;
 }
 
-export const MyCard: React.FC<NotesProps> = ({ notes }) => {
+export const MyCard: React.FC = () => {
 	const dispatch = useAppDispatch();
 
 	return (

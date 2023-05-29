@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable react/prop-types */
 import {
@@ -10,17 +11,92 @@ import {
 	Grid,
 	TextField,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { v4 as gerarId } from 'uuid';
 
+import { IsValidCredentials } from '../../../configs/types/IsValidCredentials';
+import { INotes } from '../../../configs/types/Notes';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { hideModalNotes } from '../../../store/modules/ModalNotes/modalNotesSlice';
+import { createNote } from '../../../store/modules/Notes/notesSlice';
 
-export const ModalNotes: React.FC = () => {
+interface ModalNotesProps {
+	emailUsuarioLogado: string;
+}
+
+export const ModalNotes: React.FC<ModalNotesProps> = ({
+	emailUsuarioLogado,
+}) => {
 	const [titulo, setTitulo] = useState('');
 	const [descricao, setDescricao] = useState('');
 
+	const [erroTitulo, setErroTitulo] = useState<IsValidCredentials>({
+		helperText: '',
+		isValid: true,
+	});
+
+	const [erroDescricao, setErroDescricao] = useState<IsValidCredentials>({
+		helperText: '',
+		isValid: true,
+	});
+
 	const select = useAppSelector((state) => state.modal);
 	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		if (titulo && titulo.length < 3) {
+			setErroTitulo({
+				helperText: 'Insira um titulo válido',
+				isValid: false,
+			});
+		} else {
+			setErroTitulo({
+				helperText: '',
+				isValid: true,
+			});
+		}
+	}, [titulo]);
+
+	useEffect(() => {
+		if (descricao && descricao.length < 3) {
+			setErroDescricao({
+				helperText: 'Insira uma descrição válida',
+				isValid: false,
+			});
+		} else {
+			setErroDescricao({
+				helperText: '',
+				isValid: true,
+			});
+		}
+	}, [descricao]);
+
+	function handleConfirm() {
+		if (!erroTitulo.isValid || !erroDescricao.isValid) {
+			return;
+		}
+
+		switch (select.contexto) {
+			case 'create':
+				const novoRecado: INotes = {
+					id: gerarId(),
+					criadoEm: gerarData(),
+					titulo: titulo,
+					descricao: descricao,
+					criadoPor: emailUsuarioLogado,
+				};
+				dispatch(createNote(novoRecado));
+				break;
+		}
+	}
+
+	function gerarData() {
+		return new Date().toLocaleDateString('pt-BR', {
+			month: '2-digit',
+			day: '2-digit',
+			year: 'numeric',
+		});
+	}
 
 	return (
 		<Dialog
@@ -45,6 +121,8 @@ export const ModalNotes: React.FC = () => {
 								label={'Titulo'}
 								type="text"
 								fullWidth
+								helperText={erroTitulo.helperText}
+								error={!erroTitulo.isValid}
 								onChange={(ev) => setTitulo(ev.target.value)}
 							/>
 						</Grid>
@@ -53,6 +131,8 @@ export const ModalNotes: React.FC = () => {
 								label={'Descrição'}
 								type="text"
 								fullWidth
+								helperText={erroDescricao.helperText}
+								error={!erroDescricao.isValid}
 								onChange={(ev) => setDescricao(ev.target.value)}
 							/>
 						</Grid>
@@ -75,6 +155,7 @@ export const ModalNotes: React.FC = () => {
 						background: '#F786AA',
 						'&:hover': { background: '#576CA8' },
 					}}
+					onClick={handleConfirm}
 				>
 					Confirmar
 				</Button>
