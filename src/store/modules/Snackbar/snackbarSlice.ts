@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface SnackbarProps {
-	show: boolean;
+	show?: boolean;
 	mensagem: string;
 	tipo: 'warning' | 'error' | 'success';
 }

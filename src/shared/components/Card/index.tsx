@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Divider, Grid, IconButton, Typography } from '@mui/material';
@@ -10,10 +11,10 @@ import { useAppDispatch } from '../../../store/hooks';
 import { showModalNotes } from '../../../store/modules/ModalNotes/modalNotesSlice';
 
 interface NotesProps {
-	notes: INotes;
+	note: INotes;
 }
 
-export const MyCard: React.FC = () => {
+export const MyCard: React.FC<NotesProps> = ({ note }) => {
 	const dispatch = useAppDispatch();
 
 	return (
@@ -26,11 +27,11 @@ export const MyCard: React.FC = () => {
 						marginBottom: 1,
 					}}
 				>
-					Titulo
+					{note.titulo}
 				</Typography>
 				<Divider />
 				<Typography variant="body1" component={'p'} marginTop={1}>
-					Descrição
+					{note.descricao}
 				</Typography>
 			</CardContent>
 			<Divider />
@@ -42,7 +43,7 @@ export const MyCard: React.FC = () => {
 							color={'text.secondary'}
 							component={'span'}
 						>
-							Criado Em : 05/04/2023
+							Criado Em : {note.criadoEm}
 						</Typography>
 					</Grid>
 					<Grid item justifyContent={'flex-end'}>
