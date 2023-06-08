@@ -3,7 +3,6 @@ import { Logout } from '@mui/icons-material';
 import {
 	AppBar,
 	Box,
-	Button,
 	Divider,
 	IconButton,
 	Toolbar,
@@ -53,16 +52,7 @@ export const MyAppbar: React.FC<AppbarProps> = ({ usuario }) => {
 					>
 						Olá {usuario}!
 					</Typography>
-					<Button
-						color="inherit"
-						sx={{
-							'&:hover': {
-								background: '#F786AA',
-							},
-						}}
-					>
-						Concluídas
-					</Button>
+
 					<IconButton
 						onClick={logout}
 						color="inherit"

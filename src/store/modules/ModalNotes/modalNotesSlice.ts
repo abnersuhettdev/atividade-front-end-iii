@@ -1,8 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { INotes } from '../../../configs/types/Notes';
+
 interface ModalNotesProps {
 	open?: boolean;
 	contexto?: 'create' | 'update' | 'delete';
+	recadoSelecionado?: INotes;
 }
 
 const initialState: ModalNotesProps = {
@@ -17,6 +20,7 @@ const modalNotesSlice = createSlice({
 			return {
 				open: true,
 				contexto: action.payload.contexto,
+				recadoSelecionado: action.payload.recadoSelecionado,
 			};
 		},
 		hideModalNotes: (state, action: PayloadAction<ModalNotesProps>) => {

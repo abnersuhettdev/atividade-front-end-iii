@@ -49,14 +49,24 @@ export const MyCard: React.FC<NotesProps> = ({ note }) => {
 					<Grid item justifyContent={'flex-end'}>
 						<IconButton
 							onClick={() =>
-								dispatch(showModalNotes({ contexto: 'update' }))
+								dispatch(
+									showModalNotes({
+										contexto: 'update',
+										recadoSelecionado: note,
+									}),
+								)
 							}
 						>
 							<EditIcon color="primary" />
 						</IconButton>
 						<IconButton
 							onClick={() =>
-								dispatch(showModalNotes({ contexto: 'delete' }))
+								dispatch(
+									showModalNotes({
+										contexto: 'delete',
+										recadoSelecionado: note,
+									}),
+								)
 							}
 						>
 							<DeleteIcon color="error" />

@@ -18,7 +18,12 @@ import { IsValidCredentials } from '../../../configs/types/IsValidCredentials';
 import { INotes } from '../../../configs/types/Notes';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { hideModalNotes } from '../../../store/modules/ModalNotes/modalNotesSlice';
-import { createNote } from '../../../store/modules/Notes/notesSlice';
+import {
+	createNote,
+	deleteNote,
+	updateNote,
+} from '../../../store/modules/Notes/notesSlice';
+import { showSnackbar } from '../../../store/modules/Snackbar/snackbarSlice';
 
 interface ModalNotesProps {
 	emailUsuarioLogado: string;
@@ -27,7 +32,11 @@ interface ModalNotesProps {
 export const ModalNotes: React.FC<ModalNotesProps> = ({
 	emailUsuarioLogado,
 }) => {
+	const select = useAppSelector((state) => state.modal);
+	const dispatch = useAppDispatch();
+
 	const [titulo, setTitulo] = useState('');
+
 	const [descricao, setDescricao] = useState('');
 
 	const [erroTitulo, setErroTitulo] = useState<IsValidCredentials>({
@@ -40,8 +49,14 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({
 		isValid: true,
 	});
 
-	const select = useAppSelector((state) => state.modal);
-	const dispatch = useAppDispatch();
+	useEffect(() => {
+		if (select.recadoSelecionado) {
+			setTitulo(select.recadoSelecionado.titulo);
+			setDescricao(select.recadoSelecionado.descricao);
+		} else {
+			limpaInputs();
+		}
+	}, [select.recadoSelecionado]);
 
 	useEffect(() => {
 		if (titulo && titulo.length < 3) {
@@ -72,7 +87,12 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({
 	}, [descricao]);
 
 	function handleConfirm() {
-		if (!erroTitulo.isValid || !erroDescricao.isValid) {
+		if (
+			!titulo ||
+			!descricao ||
+			!erroTitulo.isValid ||
+			!erroDescricao.isValid
+		) {
 			return;
 		}
 
@@ -86,6 +106,48 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({
 					criadoPor: emailUsuarioLogado,
 				};
 				dispatch(createNote(novoRecado));
+				dispatch(hideModalNotes({ open: false }));
+				limpaInputs();
+				dispatch(
+					showSnackbar({
+						tipo: 'success',
+						mensagem: 'Recado criado com sucesso',
+					}),
+				);
+				break;
+
+			case 'update':
+				if (select.recadoSelecionado) {
+					dispatch(
+						updateNote({
+							id: select.recadoSelecionado.id,
+							changes: {
+								titulo: titulo,
+								descricao: descricao,
+							},
+						}),
+					);
+				}
+				dispatch(hideModalNotes({ open: false }));
+				dispatch(
+					showSnackbar({
+						tipo: 'success',
+						mensagem: 'Recado atualizado com sucesso',
+					}),
+				);
+				limpaInputs();
+				break;
+			case 'delete':
+				if (select.recadoSelecionado) {
+					dispatch(deleteNote(select.recadoSelecionado.id));
+				}
+				dispatch(hideModalNotes({ open: false }));
+				dispatch(
+					showSnackbar({
+						tipo: 'success',
+						mensagem: 'Recado deletado com sucesso',
+					}),
+				);
 				break;
 		}
 	}
@@ -96,6 +158,11 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({
 			day: '2-digit',
 			year: 'numeric',
 		});
+	}
+
+	function limpaInputs() {
+		setTitulo('');
+		setDescricao('');
 	}
 
 	return (
@@ -120,6 +187,7 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({
 							<TextField
 								label={'Titulo'}
 								type="text"
+								value={titulo}
 								fullWidth
 								helperText={erroTitulo.helperText}
 								error={!erroTitulo.isValid}
@@ -130,6 +198,7 @@ export const ModalNotes: React.FC<ModalNotesProps> = ({
 							<TextField
 								label={'Descrição'}
 								type="text"
+								value={descricao}
 								fullWidth
 								helperText={erroDescricao.helperText}
 								error={!erroDescricao.isValid}

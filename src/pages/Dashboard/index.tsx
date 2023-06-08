@@ -8,12 +8,15 @@ import { MyAppbar } from '../../shared/components/Appbar';
 import { MyCard } from '../../shared/components/Card';
 import { Loading } from '../../shared/components/Loading';
 import { ModalNotes } from '../../shared/components/ModalNotes';
-import { useAppDispatch } from '../../store/hooks';
+import { MySnackbar } from '../../shared/components/Snackbar';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { showModalNotes } from '../../store/modules/ModalNotes/modalNotesSlice';
+import { listAllNotes } from '../../store/modules/Notes/notesSlice';
 
 export const Dashboard = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+	const select = useAppSelector(listAllNotes);
 
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
@@ -33,6 +36,7 @@ export const Dashboard = () => {
 		<>
 			<Grid
 				container
+				paddingTop={2}
 				sx={{
 					position: 'relative',
 				}}
@@ -46,15 +50,14 @@ export const Dashboard = () => {
 					marginTop={1}
 					minWidth={'fit-content'}
 				>
-					<Grid item xs={12} sm={6} md={4}>
-						<MyCard />
-					</Grid>
-					<Grid item xs={12} sm={6} md={4}>
-						<MyCard />
-					</Grid>
-					<Grid item xs={12} sm={6} md={4}>
-						<MyCard />
-					</Grid>
+					{select.map(
+						(note) =>
+							note.criadoPor === email && (
+								<Grid key={note.id} item xs={12} sm={6} md={4}>
+									<MyCard note={note} />
+								</Grid>
+							),
+					)}
 				</Grid>
 
 				<IconButton
@@ -83,6 +86,7 @@ export const Dashboard = () => {
 				<Loading />
 			</Grid>
 			<ModalNotes emailUsuarioLogado={email} />
+			<MySnackbar />
 		</>
 	);
 };
