@@ -1,6 +1,7 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '../..';
+import IUser from '../../../configs/types/User';
 
 const usersAdapter = createEntityAdapter<IUser>({
 	selectId: (estado) => estado.email,

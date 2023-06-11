@@ -1,3 +1,5 @@
+import IUser from '../types/User';
+
 export const validateUsuario = (usuario: string) => {
 	if (usuario.trim().length < 5) {
 		return false;

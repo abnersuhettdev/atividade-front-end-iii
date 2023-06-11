@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
 
 import { IsValidCredentials } from '../../../../configs/types/IsValidCredentials';
+import IUser from '../../../../configs/types/User';
 import {
 	validateConfirmaSenha,
 	validateEmail,
